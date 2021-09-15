@@ -1,7 +1,6 @@
 {
-    "routes": [
-      { "handle": "filesystem" },
-      { "src": "/(.*)", "dest": "app.js" }
-    ]
+    "name": "bebra-bot",
+    "builds": [{ "src": "app.js", "use": "@vercel/node" }],
+    "version": 2
   }
   
