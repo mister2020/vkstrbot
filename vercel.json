@@ -1,6 +1,6 @@
 {
     "name": "bebra-bot",
-    "builds": [{ "src": "app.js", "use": "@vercel/node" }],
+    "builds": [{ "src": "/app.js", "use": "@vercel/node" }],
     "version": 2
   }
   
