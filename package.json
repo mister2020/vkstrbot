@@ -29,6 +29,7 @@
     "node-bing-api": "^4.1.1",
     "prequest": "^1.0.0",
     "unirest": "^0.6.0",
+    "vercel": "^23.1.2",
     "vk-io": "^4.3.1",
     "yandex-pictures": "^1.4.88"
   }
