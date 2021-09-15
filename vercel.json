@@ -1,5 +1,5 @@
 {
-  "build": [
+  "build1": [
     {"source": "/(.*)", "destination": "app.js"}
   ]
 }
