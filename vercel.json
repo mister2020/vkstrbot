@@ -1,8 +1,13 @@
 {
   "name": "bebra-bot",
   "version": 1,
-  "build": [
-    {"source": "/(.*)", "src": "app.js", "use": "@vercel/node"}
-  ]
+  "scripts": {
+    "build": [
+      {"source": "/(.*)", "src": "app.js", "use": "@vercel/node"}
+    ],
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+
 }
   
