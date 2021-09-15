@@ -8,7 +8,7 @@
     "start": "node app.js"
   },
   "engines": {
-    "node": "7.20.3"
+    "node": ">=6.9"
   },
   "keywords": [],
   "author": "",
