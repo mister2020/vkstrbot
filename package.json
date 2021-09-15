@@ -19,6 +19,10 @@
     "vk-io": "^4.4.0",
     "yn": "^3.1.1"
   },
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/mister2020/bebra-bot3.git"

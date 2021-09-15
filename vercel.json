@@ -1,8 +1,6 @@
 {
-  "name": "bebra-bot",
-  "version": 1,
-  "build": [
-    {"source": "/(.*)", "src": "app.js", "use": "@vercel/node"}
+  "rewrites": [
+    {"source": "/(.*)", "destination": "app.js"}
   ]
 }
   
