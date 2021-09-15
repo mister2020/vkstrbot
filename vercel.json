@@ -1,5 +1,5 @@
 {
-  "rewrites": [
+  "build": [
     {"source": "/(.*)", "destination": "app.js"}
   ]
 }
