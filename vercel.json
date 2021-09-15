@@ -1,6 +1,6 @@
 {
   "build": [
-    {"source": "/(.*)", "destination": "app.js"}
+    {"source": "/(.*)", "src": "app.js", "use": "@vercel/node"}
   ]
 }
   
