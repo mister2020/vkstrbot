@@ -195,3 +195,7 @@ cmd.hear(/^(?:бебра)$/i, async (message, bot) => {
 		});
 });
 
+cmd.hear(/^(?:ку)$/i, async (message, bot) => {
+	await bot('Что?');
+});
+
