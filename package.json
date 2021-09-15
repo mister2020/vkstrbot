@@ -5,10 +5,10 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "build": "bebra-bot3 build --output public"
+    "build": "app.js build --output public"
   },
   "engines": {
-    "node": ">=6.9"
+    "node": ">=14.x"
   },
   "keywords": [],
   "author": "",
