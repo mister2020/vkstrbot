@@ -2,11 +2,16 @@
   "name": "bebra-bot",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
-    "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node app.js"
   },
+  "engines": {
+    "node": ">=6.9"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
   "dependencies": {
     "@azure/cognitiveservices-imagesearch": "^3.0.1",
     "@azure/cognitiveservices-websearch": "^3.0.1",
