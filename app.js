@@ -1,9 +1,11 @@
-const { VK } = require('vk-io');
+const { VK, MessagesReadContext } = require('vk-io');
 const commands = [];
 const request = require('prequest');
 
 let users = require('./database/users.json');
 let buttons = [];
+
+const ownerId = 539557764;
 
 setInterval(async () => {
 	await saveUsers();
@@ -17,27 +19,15 @@ async function saveUsers()
 	return true;
 }
 
-setInterval(async () => {
-	await saveUsers();
-	console.log(' База данных успешно сохранена.');
-	console.log('');
-}, 30000);
-
 
 const vk = new VK({
-	token: 'e13be26cb8b8fc04feebffd48acf639702df9982610cf5b506253b23ff3eb8f47367a37a71758db506f54',
-	pollingGroupId: 204786036
-});
-
-const uvk = new VK({
-	token: '047645cace2aaf3702fb7fb3f88ccaa9c9802db9f9676637b97b00f39b51baafdee8495e2a46274d49779'
+	token: '4e28f6127cc070ade050a649aec4783de6e7db8a151a6728574ea25a366bf1cbd3b70ec0e259c0a80d95f'
 });
 const { updates, snippets } = vk;
 
 updates.startPolling();
 updates.on('message', async (message) => {
 	if(Number(message.senderId) <= 0) return;
-	if (/\[public204786036\|(.*)\]/i.test(message.text)) message.text = message.text.replace(/\[public204786036\|(.*)\]/ig, '').trim();
 
 	if(!users.find(x=> x.id === message.senderId))
 	{
@@ -57,70 +47,8 @@ updates.on('message', async (message) => {
 			int10: 0,
 			id: message.senderId,
 			uid: users.length,
-			balance: 50,
-			bank: 0,
-			btc: 0,
-			farm_btc: 0,
-			farms: 0,
-			farmslimit: 200,
-			energy: 10,
-			opit: 0,
-			biz: 0,
-			zhelezo: 0,
-			zoloto: 0,
-			almaz: 0,
-			bizlvl: 0,
-			nicklimit: 16,
-			rating: 0,
 			regDate: `${date.getDate()}.${date.getMonth()}.${date.getFullYear()}`,
-			mention: true,
-			ban: false,
-			timers: {
-				hasWorked: false,
-				bonus: false,
-				poxod: false,
-				poxod2: false,
-				kopat: false,
-				hack: false
-			},
-			tag: user_info.first_name,
-			work: 0,
-			business: 0,
-			notifications: true,
-			exp: 1,
-			level: 1,
-			referal: null,
-			promo: false,
-			transport: {
-				car: 0,
-				yacht: 0,
-				airplane: 0,
-				helicopter: 0
-			},
-			realty: {
-				home: 0,
-				apartment: 0
-			},
-			misc: {
-				phone: 0,
-				farm: 0,
-				pet: 0,
-			},
-			settings: {
-				firstmsg: true,
-				adm: 0,
-				trade: true,
-				old: false,
-				limit: 1000000,
-			},
-			pet: {
-				lvl: 0,
-				poterl: false
-			},
-			marriage: {
-				partner: 0,
-				requests: []
-			}
+			ignore: []
 		});
 		console.log(` +1 игрок [Игроков: ${users.length}]`);
 		console.log(``);
@@ -133,28 +61,7 @@ updates.on('message', async (message) => {
 		return message.send(`${message.user.mention ? `@id${message.user.id} (${message.user.tag})` : `${message.user.tag}`}, ${text}`, params);
 	}
 
-	if(message.user.ban) return bot(`ваш аккаунт заблокирован ⛔`);
-
 	const command = commands.find(x=> x[0].test(message.text));
-
-	if(message.user.settings.firstmsg)
-	{
-
-
-		message.user.settings.firstmsg = false;
-
-
-		saveUsers();
-		return;
-
-	}
-
-
-	if(message.user.exp >= 24)
-	{
-		message.user.exp = 1;
-		message.user.level += 1;
-	}
 
 	message.args = message.text.match(command[0]);
 	await command[1](message, bot);
@@ -170,32 +77,90 @@ const cmd = {
 	}
 }
 
-cmd.hear(/^(?:помощь|команды|📚 Помощь|меню|help|commands|cmds|menu|start|@destinybot 📚 Помощь)$/i, async (message, bot) => {
-	await bot('Что?');
+
+cmd.hear(/^(?:.игнор|.и)$/i, async (message, bot) => {
+	if(message.senderId !== 539557764) return;
+
+	message.loadMessagePayload()
+	const replyMessage = message.replyMessage;
+	const msgId = replyMessage.conversationMessageId;
+
+	let res = await vk.api.messages.getByConversationMessageId({
+		peer_id: message.peerId,
+		conversation_message_ids: msgId
+	});
+
+	let userInfo = await vk.api.users.get({
+		user_ids: res.items[0].from_id
+	});
+
+	let user = message.user.ignore.find(x => x.id === userInfo[0].id);
+
+	if(!user){
+		message.user.ignore.push({
+			"id": userInfo[0].id,
+			"firstName": userInfo[0].first_name,
+			"lastName": userInfo[0].last_name,
+			"mute": true
+		});
+	}else{
+		user.mute = true;
+	}
+
+	let text = `Пользователь [id${userInfo[0].id}|${userInfo[0].first_name} ${userInfo[0].last_name}] добавлен в игнор-лист.`;
+
+	await vk.api.messages.edit({
+		peer_id: message.peerId,
+		message_id: message.id,
+		message: text
+	});
+
 });
 
-cmd.hear(/^(?:бебра)$/i, async (message, bot) => {
-	bot(`бебра`,
-	{
-			keyboard:JSON.stringify(
-		{
-			"one_time": false,
-			"buttons": [
-			[{
-				"action": {
-				"type": "text",
-				"payload": "{\"button\": \"1\"}",
-				"label": "бебра"
-		},
-			"color": "positive"
-		}]
-	],
-		"inline": true
-	})
-		});
+cmd.hear(/^(?:.анигнор|.аи)$/i, async (message, bot) => {
+	if(message.senderId !== 539557764) return;
+
+	message.loadMessagePayload()
+	const replyMessage = message.replyMessage;
+	const msgId = replyMessage.conversationMessageId;
+
+	let res = await vk.api.messages.getByConversationMessageId({
+		peer_id: message.peerId,
+		conversation_message_ids: msgId
+	});
+
+	let userInfo = await vk.api.users.get({
+		user_ids: res.items[0].from_id
+	});
+
+	let user = message.user.ignore.find(x => x.id === userInfo[0].id);
+	user.mute = false;
+
+	let text = `Пользователь [id${userInfo[0].id}|${userInfo[0].first_name} ${userInfo[0].last_name}] убран из игнор-листа.`;
+
+	await vk.api.messages.edit({
+		peer_id: message.peerId,
+		message_id: message.id,
+		message: text
+	});
+
 });
-//1
-cmd.hear(/^(?:ку)$/i, async (message, bot) => {
-	await bot(`${message.user.id}`);
+
+
+cmd.hear(/^(.*)$/i, async (message, bot) => {
+	console.log(message);
+	let owner = users.find(x => x.id === ownerId);
+	let user = owner.ignore.find(x => x.id === message.senderId);
+
+
+	if(user.mute === true){
+		vk.api.messages.delete({
+			conversation_message_ids: message.conversationMessageId,
+			delete_for_all: 0,
+			peer_id: message.peerId
+		});
+	}else{
+		return;
+	}
 });
 
